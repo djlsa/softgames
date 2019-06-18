@@ -1,12 +1,9 @@
 import { ResizeContainer } from './ResizeContainer';
-import { LoadManager } from './LoadManager';
 import { Sprite, Container, Text, Point, ticker } from 'pixi.js';
-import { SpriteManager } from './SpriteManager';
 
 export class TextDemo extends ResizeContainer {
 
     private textContainer: Container = new Container();
-    private emoji: Array<Sprite> = [];
 
     updatePositions() {
         this.textContainer.x = window.innerWidth / 2;
@@ -15,29 +12,31 @@ export class TextDemo extends ResizeContainer {
 
     private load() {
         this.alreadyLoaded = true;
-        LoadManager.add(this.assets, () => {
-            for(const i in this.assets) {
-                const emojo: Sprite = SpriteManager.get(this.assets[i]);
-                this.emoji.push(emojo);
+
+        this.addChild(this.textContainer);
+        this.textContainer.visible = false;
+        this.textContainer.addChild(this.buildText());
+        this.textContainer.visible = true;
+        let elapsed: number = 0;
+        ticker.shared.add(() => {
+            elapsed += ticker.shared.elapsedMS;
+            if(elapsed >= 2000) {
+                this.textContainer.removeChildren();
+                this.textContainer.visible = false;
+                this.textContainer.addChild(this.buildText());
+                this.textContainer.visible = true;
+                elapsed = 0;
             }
-            this.addChild(this.textContainer);
-            this.textContainer.addChild(this.buildText());
-            let elapsed: number = 0;
-            ticker.shared.add(() => {
-                elapsed += ticker.shared.elapsedMS;
-                if(elapsed >= 2000) {
-                    const newText: Container = this.buildText();
-                    this.textContainer.removeChildren();
-                    this.textContainer.addChild(newText);
-                    elapsed = 0;
-                }
-            })
-            this.textContainer.addChild(this.buildText());
-        }, './assets/text/');
+        })
+        this.textContainer.addChild(this.buildText());
     }
 
     private getRandomEmojo(): Sprite {
-        return this.emoji[Math.floor(Math.random() * this.emoji.length)];
+        /*const emojo: string = this.assets[Math.floor(Math.random() * this.assets.length)];
+        LoadManager.add([emojo], () => {
+            return SpriteManager.get(emojo);
+        },'./assets/text/');*/
+        return Sprite.from('./assets/text/' + this.assets[Math.floor(Math.random() * this.assets.length)]);
     }
 
     private buildText(): Container {
