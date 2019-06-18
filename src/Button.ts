@@ -12,8 +12,8 @@ export class Button extends Sprite {
         this.buttonMode = true;
     }
     public onClick(handler: () => void) {
-        this.on('mouseup', () => {
-           handler();
+        this.on('click', () => {
+            handler();
         });
     }
 }
