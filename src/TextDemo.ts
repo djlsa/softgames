@@ -67,7 +67,7 @@ export class TextDemo extends DemoContainer {
                 const emojo: Sprite = this.getRandomEmojo();
                 textContainer.addChild(emojo);
                 emojo.x = nextX;
-                emojo.width = emojo.height = em.width * window.devicePixelRatio;
+                emojo.width = emojo.height = em.width;
                 nextX += emojo.width + space.width;
             }
         }

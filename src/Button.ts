@@ -15,5 +15,8 @@ export class Button extends Container {
         this.on('click', () => {
             handler();
         });
+        this.on('touchend', () => {
+            handler();
+        });
     }
 }

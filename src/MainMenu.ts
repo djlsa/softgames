@@ -5,13 +5,14 @@ import { Button } from './Button';
 import { LoadManager } from './LoadManager';
 import { ResponsiveContainer } from './ResponsiveContainer';
 import { DemoContainer } from './DemoContainer';
+import { ParticleDemo } from './ParticleDemo';
 
 export class MainMenu extends ResponsiveContainer {
 
     private demos: { [text: string] : DemoContainer; } = {
         'Sprites': new SpriteStackDemo(),
-        'Text': new TextDemo()
-        //'Particles': new Container()
+        'Text': new TextDemo(),
+        'Particles': new ParticleDemo()
     }
 
     private buttons: Array<Button> = [];
@@ -24,12 +25,14 @@ export class MainMenu extends ResponsiveContainer {
         return button;
     }
 
-    private createMenu() {
-        for(let demo in this.demos) {
+    private start() {
+        for(const demo in this.demos) {
+            LoadManager.add(this.demos[demo]);
             let button = this.createMenuEntry(demo, this.demos[demo]);
             this.addChild(button);
             this.buttons.push(button);
         }
+        LoadManager.start();
         this.updatePositions();
     }
 
@@ -43,9 +46,6 @@ export class MainMenu extends ResponsiveContainer {
 
     constructor() {
         super();
-        LoadManager.add(this.demos['Sprites']);
-        LoadManager.add(this.demos['Text']);
-        LoadManager.start();
-        this.createMenu();
+        this.start();
     }
 }

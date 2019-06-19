@@ -16,6 +16,8 @@ export class ViewManager extends Container {
         viewManager.viewStack.push(demo);
         viewManager.stage.addChild(demo);
         demo.visible = true;
+        if(!(demo instanceof DemoContainer))
+            return;
         const dc = (demo as DemoContainer);
         if(dc.start && !dc.hasStarted())
             dc.start();
