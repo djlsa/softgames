@@ -32,6 +32,7 @@ export class SpriteStackDemo extends DemoContainer {
     stop() {
         this.cards = [];
         this.removeChildren();
+        this.cardStack.removeChildren();
         for(const i in this.tweens) {
             i;
             this.tweens.pop().stop();
