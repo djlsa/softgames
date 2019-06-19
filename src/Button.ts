@@ -12,7 +12,7 @@ export class Button extends Container {
         this.buttonMode = true;
     }
     public onClick(handler: () => void) {
-        this.on('click', () => {
+        this.on('pointerup', () => {
             handler();
         });
     }
