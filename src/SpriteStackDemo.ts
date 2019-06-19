@@ -6,7 +6,7 @@ import { DemoContainer } from './DemoContainer';
 
 export class SpriteStackDemo extends DemoContainer {
 
-    private static CARD_COUNT = 144;
+    private static CARD_COUNT = 1;
     private static CARD_WIDTH = 188;
     private static CARD_HEIGHT = 138;
     private static CARD_INTERVAL = 1000;
@@ -14,6 +14,7 @@ export class SpriteStackDemo extends DemoContainer {
 
     private cardStack: Container = new Container();
     private cards: Array<Sprite> = [];
+    private tweens: Array<Tween> = [];
 
     updatePositions() {
         this.cardStack.x = window.innerWidth / 2;
@@ -28,10 +29,17 @@ export class SpriteStackDemo extends DemoContainer {
         return 'cards';
     }
 
-    start() {
-        this.started = true;
+    stop() {
         this.cards = [];
         this.removeChildren();
+        for(const i in this.tweens) {
+            i;
+            this.tweens.pop().stop();
+        }
+    }
+
+    start() {
+        this.started = true;
         this.addBackButton();
 
         for(const card of SpriteManager.getSpritesByTag(this.getLoadingTag())) {
@@ -59,7 +67,7 @@ export class SpriteStackDemo extends DemoContainer {
 
             this.cardStack.addChild(card);
 
-            new Tween(card, {
+            const posTween = new Tween(card, {
                 property: 'x',
                 start: card.x,
                 end: SpriteStackDemo.CARD_WIDTH,
@@ -69,15 +77,19 @@ export class SpriteStackDemo extends DemoContainer {
                     this.cardStack.removeChild(card);
                     this.cardStack.addChild(card);
                 }
-            }).start();
+            });
+            posTween.start();
+            this.tweens.push(posTween);
 
-            new Tween(card, {
+            const rotTween = new Tween(card, {
                 property: 'rotation',
                 start: card.rotation,
                 end: Util.random(-15, 15) * (Math.PI / 180),
                 time: SpriteStackDemo.CARD_DURATION,
                 delay: SpriteStackDemo.CARD_INTERVAL * i
-            }).start();
+            });
+            rotTween.start();
+            this.tweens.push(rotTween);
         }
     }
 
@@ -178,7 +190,7 @@ export class SpriteStackDemo extends DemoContainer {
             'white_noise.jpg',
             'wound.jpg',
             'writhe.jpg',
-            'zap.jpg', 
+            'zap.jpg'
         ];
     }
 }

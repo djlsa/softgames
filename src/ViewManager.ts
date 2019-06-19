@@ -8,19 +8,17 @@ export class ViewManager extends Container {
     public static setStage(stage: Container) {
         ViewManager._instance.stage = stage;
     }
-    public static push(demo: Container | DemoContainer) {
+    public static push(view: Container | DemoContainer) {
         const viewManager = ViewManager._instance;
         if(viewManager.viewStack.length > 0) {
             viewManager.viewStack[viewManager.viewStack.length - 1].visible = false;
         }
-        viewManager.viewStack.push(demo);
-        viewManager.stage.addChild(demo);
-        demo.visible = true;
-        if(!(demo instanceof DemoContainer))
+        viewManager.viewStack.push(view);
+        viewManager.stage.addChild(view);
+        view.visible = true;
+        if(!(view instanceof DemoContainer))
             return;
-        const dc = (demo as DemoContainer);
-        if(dc.start && !dc.hasStarted())
-            dc.start();
+        (view as DemoContainer).start();
     }
     public static pop() {
         const viewManager = ViewManager._instance;
@@ -29,6 +27,9 @@ export class ViewManager extends Container {
             current.visible = false;
             viewManager.stage.removeChild(current);
             viewManager.viewStack[viewManager.viewStack.length - 1].visible = true;
+            if(!(current instanceof DemoContainer))
+                return;
+            (current as DemoContainer).stop();
         }
     }
 

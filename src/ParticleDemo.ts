@@ -5,6 +5,7 @@ import { Container, ticker, Texture, Sprite } from 'pixi.js';
 export class ParticleDemo extends DemoContainer {
 
     private fireContainer: Container = new Container();
+    private cupcake = Sprite.from('./assets/fire/cupcake.png');
     private emitter: Emitter = new Emitter(this.fireContainer, Texture.fromImage('./assets/fire/fire.png'), {
         "alpha": {
             "start": 0.33,
@@ -67,18 +68,24 @@ export class ParticleDemo extends DemoContainer {
         return 'fire';
     }
 
+    private update() {
+        this.emitter.update(ticker.shared.elapsedMS * 0.001);
+    }
+
+    stop() {
+        this.removeChildren();
+        ticker.shared.remove(this.update, this);
+    }
+
     start() {
         this.started = true;
         this.addBackButton();
         this.addChild(this.fireContainer);
         this.fireContainer.pivot.set(0.5);
-        const cupcake = Sprite.from('./assets/fire/cupcake.png');
-        this.fireContainer.addChildAt(cupcake, 0);
-        cupcake.x = -125;
-        cupcake.y = -20;
-        ticker.shared.add(() => {
-            this.emitter.update(ticker.shared.elapsedMS * 0.001);
-        });
+        this.fireContainer.addChildAt(this.cupcake, 0);
+        this.cupcake.x = -125;
+        this.cupcake.y = -20;
+        ticker.shared.add(this.update, this);
 
         this.emitter.emit = true;
     }

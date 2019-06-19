@@ -19,23 +19,31 @@ export class TextDemo extends DemoContainer {
     }
 
     private textContainer: Container = new Container();
+    private elapsed: number = 0;
+
+    private update() {
+        this.elapsed += ticker.shared.elapsedMS;
+        if(this.elapsed >= 2000) {
+            const newText: Container = this.buildText();
+            this.textContainer.removeChildren();
+            this.textContainer.addChild(newText);
+            this.elapsed = 0;
+        }
+    }
+
+    stop() {
+        this.removeChildren();
+        this.textContainer.removeChildren();
+        ticker.shared.remove(this.update, this);
+        this.elapsed = 0;
+    }
 
     start() {
         this.started = true;
-        this.removeChildren();
         this.addBackButton();
 
         this.addChild(this.textContainer);
-        let elapsed: number = 0;
-        ticker.shared.add(() => {
-            elapsed += ticker.shared.elapsedMS;
-            if(elapsed >= 2000) {
-                const newText: Container = this.buildText();
-                this.textContainer.removeChildren();
-                this.textContainer.addChild(newText);
-                elapsed = 0;
-            }
-        })
+        ticker.shared.add(this.update, this);
         this.textContainer.addChild(this.buildText());
     }
 

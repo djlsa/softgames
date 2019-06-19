@@ -18,27 +18,34 @@ export class Tween {
         this.sprite = sprite;
         this.parameters = parameters;
     }
-    // @ts-ignore
-    private lerp(start: number, end: number, time: number): number {
-        return (1 - time) * start + time * end; // https://en.wikipedia.org/wiki/Linear_interpolation
+
+    private ease(time: number): number {
+        return time < .5 ? 2 * time * time : -1 + (4 - 2 * time) * time
     }
-    public start() {
-        const update = () => {
-            this.elapsed += this.ticker.elapsedMS;
-            if(this.parameters.delay) {
-                if(this.elapsed < this.parameters.delay)
-                    return;
-                this.parameters.delay = undefined;
-                this.elapsed = 0;
-                if(this.parameters.onStart)
-                    this.parameters.onStart();
-            }
-            const time = this.elapsed / this.parameters.time;
-            // @ts-ignore
-            this.sprite[this.parameters.property] = this.lerp(this.parameters.start, this.parameters.end, time);
-            if(this.elapsed >= this.parameters.time)
-                this.ticker.remove(update);
-        };
-        this.ticker.add(update);
+
+    protected update() {
+        this.elapsed += this.ticker.elapsedMS;
+        if(this.parameters.delay) {
+            if(this.elapsed < this.parameters.delay)
+                return;
+            this.parameters.delay = undefined;
+            this.elapsed = 0;
+            if(this.parameters.onStart)
+                this.parameters.onStart();
+        }
+        const time = this.elapsed / this.parameters.time;
+        const ease = this.ease(time);
+        // @ts-ignore
+        this.sprite[this.parameters.property] =  (1 - ease) * this.parameters.start + ease * this.parameters.end;
+        if(this.elapsed >= this.parameters.time)
+            this.stop();
+    }
+
+    start() {
+        this.ticker.add(this.update, this);
+    }
+
+    stop() {
+        this.ticker.remove(this.update, this);
     }
 }

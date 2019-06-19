@@ -7,6 +7,7 @@ export abstract class DemoContainer extends LoadingContainer {
     protected started: boolean = false;
 
     abstract start(): void;
+    abstract stop(): void;
     public hasStarted(): boolean {
         return this.started;
     }
