@@ -14,6 +14,7 @@ export class Tween {
     private sprite: Sprite;
     private parameters: TweenParameters;
     private elapsed: number = 0;
+    private running: boolean = true;
     constructor(sprite: Sprite, parameters: TweenParameters) {
         this.sprite = sprite;
         this.parameters = parameters;
@@ -24,6 +25,8 @@ export class Tween {
     }
 
     protected update() {
+        if(!this.running)
+            return;
         this.elapsed += this.ticker.elapsedMS;
         if(this.parameters.delay) {
             if(this.elapsed < this.parameters.delay)
@@ -46,6 +49,7 @@ export class Tween {
     }
 
     stop() {
+        this.running = false;
         this.ticker.remove(this.update, this);
     }
 }

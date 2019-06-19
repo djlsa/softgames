@@ -44,7 +44,7 @@ export class SpriteStackDemo extends DemoContainer {
         this.addBackButton();
 
         for(const card of SpriteManager.getSpritesByTag(this.getLoadingTag())) {
-            this.cards.push(card);
+            this.cards.push(new Sprite(card.texture)); // can't reuse because of bug with
         }
         const missing = SpriteStackDemo.CARD_COUNT - this.cards.length;
         const random = Util.random(0, this.cards.length - 1 - missing);
