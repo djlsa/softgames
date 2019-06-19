@@ -1,43 +1,36 @@
-import { Text, Container } from 'pixi.js';
-import { ResizeContainer } from './ResizeContainer';
 import { SpriteStackDemo } from './SpriteStackDemo';
 import { ViewManager } from './ViewManager';
 import { TextDemo } from './TextDemo';
+import { Button } from './Button';
+import { LoadManager } from './LoadManager';
+import { ResponsiveContainer } from './ResponsiveContainer';
+import { DemoContainer } from './DemoContainer';
 
-export class MainMenu extends ResizeContainer {
+export class MainMenu extends ResponsiveContainer {
 
-    private demos: { [text: string] : Container; } = {
+    private demos: { [text: string] : DemoContainer; } = {
         'Sprites': new SpriteStackDemo(),
-        'Text': new TextDemo(),
-        'Particles': new Container()
+        'Text': new TextDemo()
+        //'Particles': new Container()
     }
 
-    private buttons: Array<Text> = [];
+    private buttons: Array<Button> = [];
 
-    private createMenuEntry(text: string, container: Container): Text {
-        const button = new Text(text, new PIXI.TextStyle({
-            "dropShadow": true,
-            "dropShadowAlpha": 0.5,
-            "dropShadowAngle": 0.5,
-            "dropShadowBlur": 5,
-            "padding": 5,
-            "stroke": "red",
-            "strokeThickness": 1
-        }));
-        button.interactive = true;
-        button.buttonMode = true;
-        button.on('pointerup', () => {
-            ViewManager.push(container);
+    private createMenuEntry(text: string, demo: DemoContainer): Button {
+        const button = new Button(text);
+        button.onClick(() => {
+            ViewManager.push(demo);
         });
         return button;
     }
 
     private createMenu() {
-        for(let i in this.demos) {
-            let button = this.createMenuEntry(i, this.demos[i] );
+        for(let demo in this.demos) {
+            let button = this.createMenuEntry(demo, this.demos[demo]);
             this.addChild(button);
             this.buttons.push(button);
         }
+        this.updatePositions();
     }
 
     updatePositions() {
@@ -48,13 +41,11 @@ export class MainMenu extends ResizeContainer {
         }
     }
 
-    private demoContainer: Container = new Container();
-
     constructor() {
-        super(false);
+        super();
+        LoadManager.add(this.demos['Sprites']);
+        LoadManager.add(this.demos['Text']);
+        LoadManager.start();
         this.createMenu();
-        this.addChild(this.demoContainer);
-        this.updatePositions();
-        this.demoContainer;
     }
 }

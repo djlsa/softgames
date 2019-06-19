@@ -1,6 +1,6 @@
-import { Sprite, Text } from "pixi.js";
+import { Container, Text } from "pixi.js";
 
-export class Button extends Sprite {
+export class Button extends Container {
     private text: string;
     private label: Text;
     constructor(text: string) {

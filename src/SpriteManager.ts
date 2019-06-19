@@ -1,33 +1,27 @@
 import { Texture, Sprite } from 'pixi.js';
 
 export class SpriteManager {
-    private static instance: SpriteManager = new SpriteManager();
+    private static _instance: SpriteManager = new SpriteManager();
     private sprites: { [name: string] : Sprite; } = {};
-    private tags: { [tag: string] : Array<string> } = {};
-    public static getInstance(): SpriteManager {
-        return this.instance;
-    }
+    private tags: { [tag: string] : Array<Sprite> } = {};
     public static add(name: string, resource: Texture, tag: string) {
-        const instance = SpriteManager.instance;
+        const instance = SpriteManager._instance;
         if(!instance.sprites[name]) {
             const newSprite: Sprite = new Sprite(resource);
             instance.sprites[name] = newSprite;
             if(!instance.tags[tag])
-                instance.tags[tag] = new Array<string>();
-            instance.tags[tag].push(name);
+                instance.tags[tag] = new Array<Sprite>();
+            instance.tags[tag].push(newSprite);
         }
     }
     public static get(name: string): Sprite {
-        const instance = SpriteManager.instance;
+        const instance = SpriteManager._instance;
         if(instance.sprites[name])
             return instance.sprites[name];
         return null;
     }
-    public static getSpritesByTag(tag: string): Array<string> {
-        let keys: Array<string> = [];
-        for(const i in SpriteManager.instance.tags[tag])
-            keys.push(SpriteManager.instance.tags[tag][i]);
-        return keys;
+    public static getSpritesByTag(tag: string): Array<Sprite> {
+        return SpriteManager._instance.tags[tag] || [];
     }
 
 }

@@ -1,26 +1,27 @@
-import { Container } from 'pixi.js';
+import { Container } from "pixi.js";
+import { DemoContainer } from "./DemoContainer";
 
 export class ViewManager extends Container {
-    private static instance: ViewManager = new ViewManager();
+    private static _instance: ViewManager = new ViewManager();
     private stage: Container;
     private viewStack: Array<Container> = [];
-    public static getInstance(): ViewManager {
-        return this.instance;
-    }
     public static setStage(stage: Container) {
-        ViewManager.instance.stage = stage;
+        ViewManager._instance.stage = stage;
     }
-    public static push(container: Container) {
-        const viewManager = ViewManager.instance;
+    public static push(demo: Container | DemoContainer) {
+        const viewManager = ViewManager._instance;
         if(viewManager.viewStack.length > 0) {
             viewManager.viewStack[viewManager.viewStack.length - 1].visible = false;
         }
-        viewManager.viewStack.push(container);
-        viewManager.stage.addChild(container);
-        container.visible = true;
+        viewManager.viewStack.push(demo);
+        viewManager.stage.addChild(demo);
+        demo.visible = true;
+        const dc = (demo as DemoContainer);
+        if(dc.start && !dc.hasStarted())
+            dc.start();
     }
     public static pop() {
-        const viewManager = ViewManager.instance;
+        const viewManager = ViewManager._instance;
         if(viewManager.viewStack.length > 1) {
             const current = viewManager.viewStack.pop();
             current.visible = false;
