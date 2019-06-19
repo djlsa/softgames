@@ -6,7 +6,7 @@ export class Main {
 
     private app = new Application({
         autoResize: true,
-        resolution: devicePixelRatio,
+        resolution: 1,
         backgroundColor: 0xCCCCCC
     });
     private FPS: Text = new Text();

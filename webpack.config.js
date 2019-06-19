@@ -4,7 +4,7 @@ const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 module.exports = {
     entry: './src/index.ts',
-    mode: 'production',
+    mode: 'development',
     devtool: 'inline-source-map',
     module: {
     rules: [
